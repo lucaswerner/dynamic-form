@@ -8,14 +8,14 @@ import { MaterialModule } from './material.module';
 import { AppComponent } from './app.component';
 import { DynamicFormComponent } from './dynamic-form/dynamic-form.component';
 import { DynamicFormQuestionComponent } from './dynamic-form-question/dynamic-form-question.component';
-import { MeuPipePipe } from './meu-pipe.pipe';
+import { QuestionContainerComponent } from './question-container/question-container.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     DynamicFormComponent,
     DynamicFormQuestionComponent,
-    MeuPipePipe
+    QuestionContainerComponent
   ],
   imports: [
     BrowserModule,

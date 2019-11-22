@@ -1,0 +1,10 @@
+<ng-template [ngIf]="isArray(questionData)" [ngIfElse]="renderQuestion">
+    <app-question-container *ngFor="let data of questionData" [questionData]="data" [formGroup]="formGroup"
+        [className]="getGridClass(data)">
+    </app-question-container>
+</ng-template>
+
+<ng-template #renderQuestion>
+    <app-question [question]="questionData" [formGroup]="formGroup" [abstractControl]="getFormControl(questionData)">
+    </app-question>
+</ng-template>

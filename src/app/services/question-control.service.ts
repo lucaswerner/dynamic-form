@@ -6,12 +6,25 @@ import { QuestionBase } from '../entities/question-base';
 export class QuestionControlService {
   constructor(private fb: FormBuilder) { }
 
-  toFormGroup(questions: QuestionBase<any>[]) {
-    let group: any = {};
+  toFormGroup(questionsData: QuestionBase<any>[][]) {
+    const group = this.questionDataToObject(questionsData);
 
-    questions.forEach(question => {
-      group[question.key] = [question.value || '', question.validators];
-    });
     return this.fb.group(group);
+  }
+
+  private questionDataToObject(questionsListOfList): object {
+    return questionsListOfList.reduce((accumulator, questions) => {
+
+      if (Array.isArray(questions)) {
+        return {
+          ...accumulator,
+          ...this.questionDataToObject(questions)
+        };
+      }
+
+      return {
+        ...accumulator, [questions.key]: [questions.value || '', questions.validators]
+      };
+    }, {});
   }
 }

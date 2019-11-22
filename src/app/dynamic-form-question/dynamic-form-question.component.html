@@ -1,36 +1,46 @@
-<!-- <mat-grid-tile> -->
-    <div [formGroup]="formGroup">
+<div [formGroup]="formGroup" [ngSwitch]="question.controlType">
+  <mat-form-field *ngSwitchCase="'input'">
+    <input
+      matInput
+      [formControlName]="question.key"
+      [id]="question.key"
+      [type]="question.type"
+      [placeholder]="question.label"
+    />
+    <mat-error *ngIf="hasErrorMessage">{{ errorMessage }}</mat-error>
+  </mat-form-field>
 
+  <mat-form-field *ngSwitchCase="'select'">
+    <mat-label>{{ question.label }}</mat-label>
+    <mat-select [id]="question.key" [formControlName]="question.key">
+      <mat-option *ngFor="let opt of question.options" [value]="opt.value">{{
+        opt.key
+      }}</mat-option>
+    </mat-select>
+    <mat-error *ngIf="hasErrorMessage">{{ errorMessage }}</mat-error>
+  </mat-form-field>
 
-        <div [ngSwitch]="question.controlType">
+  <mat-checkbox
+    *ngSwitchCase="'checkbox'"
+    [id]="question.key"
+    [formControlName]="question.key"
+  >
+    {{ question.label }}
+  </mat-checkbox>
 
-            <mat-form-field *ngSwitchCase="'input'">
-                <input matInput [formControlName]="question.key" [id]="question.key" [type]="question.type"
-                    [placeholder]="question.label">
-                <mat-error *ngIf="hasErrorMessage">{{errorMessage}}</mat-error>
-            </mat-form-field>
+  <mat-radio-group
+    *ngSwitchCase="'radio'"
+    aria-label="question.label"
+    [formControlName]="question.key"
+  >
+    <mat-radio-button
+      *ngFor="let opt of question.options"
+      [value]="opt.value"
+      >{{ opt.key }}</mat-radio-button
+    >
+  </mat-radio-group>
 
-            <mat-form-field *ngSwitchCase="'select'">
-                <mat-label>{{question.label}}</mat-label>
-                <mat-select [id]="question.key" [formControlName]="question.key">
-                    <mat-option *ngFor="let opt of question.options" [value]="opt.value">{{opt.key}}</mat-option>
-                </mat-select>
-                <mat-error *ngIf="hasErrorMessage">{{errorMessage}}</mat-error>
-            </mat-form-field>
-
-            <mat-checkbox *ngSwitchCase="'checkbox'" [id]="question.key" [formControlName]="question.key">
-                {{question.label}}
-            </mat-checkbox>
-
-            <mat-radio-group *ngSwitchCase="'radio'" aria-label="question.label">
-                <mat-radio-button *ngFor="let opt of question.options" [value]="opt.value">{{opt.key}}</mat-radio-button>
-            </mat-radio-group>
-
-        </div>
-
-        <div>
-            {{ abstractControl.errors | json }}
-        </div>
-
-    </div>
-<!-- </mat-grid-tile> -->
+  <!-- <div>
+    {{ abstractControl.errors | json }}
+  </div> -->
+</div>

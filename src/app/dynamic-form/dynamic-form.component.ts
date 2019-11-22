@@ -1,31 +1,53 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { FormGroup, AbstractControl } from '@angular/forms';
+import { Component, Input, OnInit } from "@angular/core";
+import { FormGroup } from "@angular/forms";
 
-import { QuestionBase } from '../entities/question-base';
-import { QuestionControlService } from '../services/question-control.service';
+import { QuestionControlService } from "../services/question-control.service";
+import { DynamicFormData } from "../entities/dynamic-form-data";
 
 @Component({
-  selector: 'app-dynamic-form',
-  templateUrl: './dynamic-form.component.html',
+  selector: "app-dynamic-form",
+  templateUrl: "./dynamic-form.component.html",
+  styleUrls: ["./dynamic-form.component.less"],
   providers: [QuestionControlService]
 })
 export class DynamicFormComponent implements OnInit {
-
-  @Input() questions: QuestionBase<any>[] = [];
+  @Input() dynamicFormData: DynamicFormData;
   form: FormGroup;
-  payLoad = '';
+  submitting = false;
 
-  constructor(private qcs: QuestionControlService) { }
+  constructor(private qcs: QuestionControlService) {}
 
   ngOnInit() {
     this.form = this.qcs.toFormGroup(this.questions);
   }
 
-  getFormControl(question: QuestionBase<any>): AbstractControl {
-    return this.form.controls[question.key];
+  get questions() {
+    return this.dynamicFormData.questions;
   }
 
-  onSubmit() {
-    this.payLoad = JSON.stringify(this.form.value);
+  get onSubmit() {
+    return this.dynamicFormData.onSubmit;
+  }
+
+  get onCancel() {
+    return this.dynamicFormData.onCancel;
+  }
+
+  submit() {
+    this.submitting = true;
+    this.form.disable();
+    this.dynamicFormData.onSubmit.action(this.form.value).subscribe(result => {
+      this.submitting = false;
+      this.form.enable();
+    });
+  }
+
+  cancel() {
+    this.submitting = true;
+    this.form.disable();
+    this.onCancel.action(this.form.value).subscribe(() => {
+      this.submitting = false;
+      this.form.enable();
+    });
   }
 }

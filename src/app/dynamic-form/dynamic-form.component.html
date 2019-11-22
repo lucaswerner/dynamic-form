@@ -1,17 +1,23 @@
 <div>
-    <form (ngSubmit)="onSubmit()" [formGroup]="form">
+    <h1>{{dynamicFormData.title}}</h1>
+    <form (ngSubmit)="submit()" [formGroup]="form">
 
-        <div *ngFor="let question of questions" class="form-row">
-            <app-question [question]="question" [formGroup]="form" [abstractControl]="getFormControl(question)"></app-question>
-        </div>
+        <app-question-container [questionData]="questions" [formGroup]="form">
+        </app-question-container>
 
-        <div class="form-row">
-            <button type="submit" [disabled]="!form.valid">Save</button>
+        <div class="row">
+            <div class="col-xs-12">
+                <button [ngClass]="{'submitting': submitting}" type="submit" mat-raised-button color="accent"
+                    [disabled]="!form.valid">
+                    <span>{{onSubmit.label}}</span>
+                    <span class="spinner-wrapper" *ngIf="submitting">
+                        <mat-spinner [diameter]="18"></mat-spinner>
+                    </span>
+                </button>
+                <button *ngIf="onCancel" class="cancel__button" (click)="cancel()"
+                    type="button" mat-raised-button color="warn" [disabled]="submitting">onCancel.label</button>
+            </div>
         </div>
     </form>
-
-    <div *ngIf="payLoad" class="form-row">
-        <strong>Saved the following values</strong><br>{{payLoad}}
-    </div>
 
 </div>

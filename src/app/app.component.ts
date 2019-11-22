@@ -1,16 +1,20 @@
-import { Component } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 
 import { QuestionService } from "./services/question.service";
+import { DynamicFormData } from './entities/dynamic-form-data';
 
 @Component({
   selector: "app-root",
   templateUrl: "./app.component.html",
   providers: [QuestionService]
 })
-export class AppComponent {
-  questions: any[];
+export class AppComponent implements OnInit {
+  dynamicFormData: DynamicFormData = new DynamicFormData();
 
-  constructor(service: QuestionService) {
-    this.questions = service.getQuestions();
+  constructor(private service: QuestionService) { }
+
+  ngOnInit() {
+    this.service.getDynamicFormData()
+      .subscribe(dynamicFormData => this.dynamicFormData = dynamicFormData);
   }
 }
