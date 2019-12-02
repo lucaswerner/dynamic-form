@@ -1,4 +1,4 @@
 export class Option {
-  key: string;
+  label: string;
   value: string;
 }

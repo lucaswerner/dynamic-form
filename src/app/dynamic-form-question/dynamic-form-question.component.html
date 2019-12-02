@@ -28,17 +28,19 @@
     {{ question.label }}
   </mat-checkbox>
 
-  <mat-radio-group
-    *ngSwitchCase="'radio'"
-    aria-label="question.label"
-    [formControlName]="question.key"
-  >
-    <mat-radio-button
-      *ngFor="let opt of question.options"
-      [value]="opt.value"
-      >{{ opt.key }}</mat-radio-button
+  <div *ngSwitchCase="'radio'">
+    <label *ngIf="question.label">{{ question.label }}</label>
+    <mat-radio-group
+      aria-label="question.label"
+      [formControlName]="question.key"
     >
-  </mat-radio-group>
+      <mat-radio-button
+        *ngFor="let opt of question.options"
+        [value]="opt.value"
+        >{{ opt.label }}</mat-radio-button
+      >
+    </mat-radio-group>
+  </div>
 
   <!-- <div>
     {{ abstractControl.errors | json }}

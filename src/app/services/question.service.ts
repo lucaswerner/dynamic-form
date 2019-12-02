@@ -13,7 +13,6 @@ import { DynamicFormData } from "../entities/dynamic-form-data";
 @Injectable()
 export class QuestionService {
   private save = (values: object) => {
-    console.log(values);
     return of(values).pipe(delay(5000));
   };
 
@@ -37,10 +36,10 @@ export class QuestionService {
           key: "brave",
           label: "Bravery Rating",
           options: [
-            { key: "solid", value: "Solid" },
-            { key: "great", value: "Great" },
-            { key: "good", value: "Good" },
-            { key: "unproven", value: "Unproven" }
+            { label: "solid", value: "Solid" },
+            { label: "great", value: "Great" },
+            { label: "good", value: "Good" },
+            { label: "unproven", value: "Unproven" }
           ],
           validators: [Validators.required],
           grid: 4
@@ -50,7 +49,6 @@ export class QuestionService {
           key: "firstName",
           label: "First name",
           value: "Bombasto",
-          required: true,
           validators: [Validators.required, Validators.minLength(8)],
           grid: 8
         })
@@ -78,8 +76,8 @@ export class QuestionService {
           key: "gender",
           label: "Gender",
           options: [
-            { key: "Male", value: "male" },
-            { key: "Female", value: "female" }
+            { label: "Male", value: "male" },
+            { label: "Female", value: "female" }
           ],
           validators: [Validators.required]
         })

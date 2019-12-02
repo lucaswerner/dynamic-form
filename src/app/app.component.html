@@ -4,10 +4,8 @@
   </mat-toolbar-row>
 </mat-toolbar>
 
-<mat-card>
-  <div class="row around-xs">
-    <div class="col-xs-6">
-      <app-dynamic-form [dynamicFormData]="dynamicFormData"></app-dynamic-form>
-    </div>
-  </div>
-</mat-card>
+<main class="flex-fill-height">
+  <mat-card class="container flex-fill-height">
+    <router-outlet></router-outlet>
+  </mat-card>
+</main>

@@ -1,8 +1,9 @@
-import { Component, Input, OnInit } from "@angular/core";
+import { Component, Input, OnInit, OnDestroy } from "@angular/core";
 import { FormGroup } from "@angular/forms";
 
 import { QuestionControlService } from "../services/question-control.service";
 import { DynamicFormData } from "../entities/dynamic-form-data";
+import { Observable, Subscription } from "rxjs";
 
 @Component({
   selector: "app-dynamic-form",
@@ -10,15 +11,36 @@ import { DynamicFormData } from "../entities/dynamic-form-data";
   styleUrls: ["./dynamic-form.component.less"],
   providers: [QuestionControlService]
 })
-export class DynamicFormComponent implements OnInit {
-  @Input() dynamicFormData: DynamicFormData;
+export class DynamicFormComponent implements OnInit, OnDestroy {
+  @Input() dynamicFormData$: Observable<DynamicFormData>;
+  dynamicFormData: DynamicFormData;
+
+  dynamicFormDataSubscription: Subscription;
+  submitSubscription: Subscription;
+  cancelSubscription: Subscription;
+
   form: FormGroup;
   submitting = false;
 
   constructor(private qcs: QuestionControlService) {}
 
   ngOnInit() {
-    this.form = this.qcs.toFormGroup(this.questions);
+    this.dynamicFormDataSubscription = this.dynamicFormData$.subscribe(data => {
+      this.dynamicFormData = data;
+      this.form = this.qcs.toFormGroup(data.questions);
+    });
+  }
+
+  ngOnDestroy() {
+    this.dynamicFormDataSubscription.unsubscribe();
+
+    if (this.submitSubscription) {
+      this.submitSubscription.unsubscribe();
+    }
+
+    if (this.cancelSubscription) {
+      this.cancelSubscription.unsubscribe();
+    }
   }
 
   get questions() {
@@ -33,21 +55,35 @@ export class DynamicFormComponent implements OnInit {
     return this.dynamicFormData.onCancel;
   }
 
-  submit() {
+  get submitDisabled(): boolean {
+    return !this.form.valid || !this.form.dirty || this.submitting;
+  }
+
+  private startAction() {
     this.submitting = true;
     this.form.disable();
-    this.dynamicFormData.onSubmit.action(this.form.value).subscribe(result => {
-      this.submitting = false;
-      this.form.enable();
-    });
+  }
+
+  private endAction() {
+    this.submitting = false;
+    this.form.enable();
+  }
+
+  submit() {
+    this.startAction();
+    this.submitSubscription = this.dynamicFormData.onSubmit
+      .action(this.form.value)
+      .subscribe(() => {
+        this.endAction();
+      });
   }
 
   cancel() {
-    this.submitting = true;
-    this.form.disable();
-    this.onCancel.action(this.form.value).subscribe(() => {
-      this.submitting = false;
-      this.form.enable();
-    });
+    this.startAction();
+    this.cancelSubscription = this.onCancel
+      .action(this.form.value)
+      .subscribe(() => {
+        this.endAction();
+      });
   }
 }

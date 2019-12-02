@@ -6,7 +6,6 @@ export class QuestionBase<T> {
   value: T;
   key: string;
   label: string;
-  required: boolean;
   controlType: ControlTypeEnum;
   validators: Validators[];
   grid: number | QuestionGrid;
@@ -16,7 +15,6 @@ export class QuestionBase<T> {
       value?: T;
       key?: string;
       label?: string;
-      required?: boolean;
       controlType?: ControlTypeEnum;
       validators?: Validators[];
       grid?: number | QuestionGrid;
@@ -25,7 +23,6 @@ export class QuestionBase<T> {
     this.value = options.value;
     this.key = options.key || "";
     this.label = options.label || "";
-    this.required = !!options.required;
     this.controlType = options.controlType || ControlTypeEnum.INPUT;
     this.validators = options.validators || [];
     this.grid = options.grid || 12;
